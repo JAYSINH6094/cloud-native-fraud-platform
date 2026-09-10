@@ -5,7 +5,7 @@ from .database import update_transaction_status
 from .rules import evaluate_transaction
 
 class TransactionDeserializer(Deserializer):
-    def deserialize(self, data):
+    def deserialize(self, topic, data):
         return json.loads(data.decode("utf-8"))
 
 
