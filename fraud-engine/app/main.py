@@ -1,25 +1,35 @@
+import json
+
+from kafka import KafkaConsumer
+
 from .rules import evaluate_transaction
 
 
-def process_transaction(transaction: dict) -> str:
-    """
-    Process a transaction through the fraud detection rules.
-    """
+consumer = KafkaConsumer(
+    "transactions",
+    bootstrap_servers=["kafka:9092"],
+    group_id="fraud-engine",
+    value_deserializer=lambda value: json.loads(value.decode("utf-8"))
+)
 
+
+def process_transaction(transaction: dict) -> str:
     return evaluate_transaction(
-        amount=transaction["amount"],
+        amount=float(transaction["amount"]),
         location=transaction["location"],
         device_id=transaction["device_id"]
     )
 
 
 if __name__ == "__main__":
-    transaction = {
-        "amount": 3000,
-        "location": "Ahmedabad",
-        "device_id": "DEVICE003"
-    }
+    print("Fraud Engine started...")
 
-    result = process_transaction(transaction)
+    for message in consumer:
+        transaction = message.value
 
-    print("Fraud Detection Result:", result)
+        result = process_transaction(transaction)
+
+        print(
+            f"Transaction: {transaction['transaction_id']} | "
+            f"Result: {result}"
+        )

@@ -4,13 +4,14 @@ from fastapi import APIRouter, HTTPException
 
 from .schemas import TransactionCreate, TransactionResponse
 from .crud import insert_transaction, get_transaction_by_id
+from .kafka_producer import publish_transaction
+
 
 router = APIRouter()
 
 
 @router.post("/transactions", response_model=TransactionResponse)
 def create_transaction(transaction: TransactionCreate):
-
     transaction_id = str(uuid.uuid4())
 
     insert_transaction(
@@ -24,12 +25,13 @@ def create_transaction(transaction: TransactionCreate):
 
     saved_transaction = get_transaction_by_id(transaction_id)
 
+    publish_transaction(saved_transaction)
+
     return saved_transaction
 
 
 @router.get("/transactions/{transaction_id}")
 def get_transaction(transaction_id: str):
-
     transaction = get_transaction_by_id(transaction_id)
 
     if transaction is None:
