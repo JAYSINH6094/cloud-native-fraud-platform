@@ -1,0 +1,36 @@
+services:
+
+  mysql:
+    image: mysql:8.0
+    container_name: fraud-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: fraud_db
+      MYSQL_USER: fraud_user
+      MYSQL_PASSWORD: fraud_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - fraud-network
+
+  api:
+    build:
+      context: ./transaction-api
+      dockerfile: Dockerfile
+    container_name: fraud-api
+    env_file:
+      - ./transaction-api/.env
+    ports:
+      - "8000:8000"
+    depends_on:
+      - mysql
+    networks:
+      - fraud-network
+
+volumes:
+  mysql_data:
+
+networks:
+  fraud-network:
