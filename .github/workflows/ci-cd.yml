@@ -1,0 +1,29 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install API dependencies
+        run: |
+          pip install -r transaction-api/requirements.txt
+
+      - name: Build API Docker image
+        run: docker build -t fraud-api ./transaction-api
+
+      - name: Build Fraud Engine Docker image
+        run: docker build -t fraud-engine ./fraud-engine
