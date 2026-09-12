@@ -32,20 +32,43 @@ jobs:
         run: |
           pip install -r transaction-api/requirements.txt
 
-      - name: Build API Docker image
-        run: docker build -t fraud-api ./transaction-api
-
-      - name: Build Fraud Engine Docker image
-        run: docker build -t fraud-engine ./fraud-engine
-
       - name: Verify AWS access
         run: aws sts get-caller-identity
+
+      - name: Login to Amazon ECR
+        run: |
+          aws ecr get-login-password --region ap-south-1 | \
+            docker login --username AWS --password-stdin \
+            649320110694.dkr.ecr.ap-south-1.amazonaws.com
+
+      - name: Build API Docker image
+        run: |
+          docker build \
+            -t 649320110694.dkr.ecr.ap-south-1.amazonaws.com/fraud-api:${{ github.sha }} \
+            ./transaction-api
+
+      - name: Build Fraud Engine Docker image
+        run: |
+          docker build \
+            -t 649320110694.dkr.ecr.ap-south-1.amazonaws.com/fraud-engine:${{ github.sha }} \
+            ./fraud-engine
+
+      - name: Push API image to ECR
+        run: |
+          docker push \
+            649320110694.dkr.ecr.ap-south-1.amazonaws.com/fraud-api:${{ github.sha }}
+
+      - name: Push Fraud Engine image to ECR
+        run: |
+          docker push \
+            649320110694.dkr.ecr.ap-south-1.amazonaws.com/fraud-engine:${{ github.sha }}
 
       - name: Configure kubectl
         run: |
           aws eks update-kubeconfig \
             --region ap-south-1 \
             --name fraud-platform-eks
+
           kubectl get nodes
 
       - name: Deploy to EC2
