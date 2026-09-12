@@ -18,3 +18,7 @@ terraform/.terraform/
 terraform/*.tfstate
 terraform/*.tfstate.*
 terraform/.terraform.lock.hcl
+tools/
+eksctl_Windows_amd64.zip
+
+eksctl/

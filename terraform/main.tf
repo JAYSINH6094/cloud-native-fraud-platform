@@ -10,7 +10,7 @@ terraform {
 }
 
 provider "aws" {
-  region = "ap-south-1"
+  region = var.aws_region
 }
 
 resource "aws_vpc" "fraud_vpc" {
@@ -217,7 +217,7 @@ resource "aws_db_instance" "fraud_mysql" {
 
   db_name  = "fraud_db"
   username = "fraud_user"
-  password = "fraud_password"
+  password = var.db_password
 
   db_subnet_group_name = aws_db_subnet_group.fraud_db_subnet_group.name
   vpc_security_group_ids = [
