@@ -176,7 +176,7 @@ resource "aws_security_group" "rds_sg" {
     from_port       = 3306
     to_port         = 3306
     protocol        = "tcp"
-    security_groups = [aws_security_group.app_sg.id]
+    security_groups = [aws_security_group.app_sg.id, "sg-08d8f3296eea9fb31"]
   }
 
   egress {
