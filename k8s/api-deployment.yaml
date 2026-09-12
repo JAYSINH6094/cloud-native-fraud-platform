@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: transaction-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: transaction-api
+  template:
+    metadata:
+      labels:
+        app: transaction-api
+    spec:
+      containers:
+        - name: transaction-api
+          image: 649320110694.dkr.ecr.ap-south-1.amazonaws.com/fraud-api:latest
+          imagePullPolicy: Always
+
+          env:
+            - name: DB_HOST
+              value: "fraud-mysql.cfey2gic407o.ap-south-1.rds.amazonaws.com"
+            - name: DB_PORT
+              value: "3306"
+            - name: DB_USER
+              value: "fraud_user"
+            - name: DB_PASSWORD
+              value: "YOUR_RDS_PASSWORD"
+            - name: DB_NAME
+              value: "fraud_db"
+
+
+          ports:
+            - containerPort: 8000
