@@ -41,6 +41,13 @@ jobs:
       - name: Verify AWS access
         run: aws sts get-caller-identity
 
+      - name: Configure kubectl
+        run: |
+          aws eks update-kubeconfig \
+            --region ap-south-1 \
+            --name fraud-platform-eks
+          kubectl get nodes
+
       - name: Deploy to EC2
         run: |
           COMMAND_ID=$(aws ssm send-command \
