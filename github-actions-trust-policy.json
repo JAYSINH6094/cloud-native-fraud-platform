@@ -12,7 +12,7 @@
           "token.actions.githubusercontent.com:aud": "sts.amazonaws.com"
         },
         "StringLike": {
-          "token.actions.githubusercontent.com:sub": "repo:JAYSINH6094@143113179/cloud-native-fraud-platform@1363591928:ref:refs/heads/main"
+          "token.actions.githubusercontent.com:sub": "repo:JAYSINH6094/cloud-native-fraud-platform:ref:refs/heads/main"
         }
       }
     }
