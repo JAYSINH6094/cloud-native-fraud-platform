@@ -1,4 +1,4 @@
-﻿{
+{
   "Version": "2012-10-17",
   "Statement": [
     {
@@ -21,6 +21,7 @@
       "Sid": "ECRPush",
       "Effect": "Allow",
       "Action": [
+        "ecr:DescribeRepositories",
         "ecr:BatchCheckLayerAvailability",
         "ecr:CompleteLayerUpload",
         "ecr:InitiateLayerUpload",
