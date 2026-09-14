@@ -1,4 +1,4 @@
-apiVersion: eksctl.io/v1alpha5
+﻿apiVersion: eksctl.io/v1alpha5
 kind: ClusterConfig
 
 metadata:
@@ -14,6 +14,16 @@ vpc:
         id: <PRIVATE_SUBNET_1A_ID>
       ap-south-1b:
         id: <PRIVATE_SUBNET_1B_ID>
+
+accessConfig:
+  authenticationMode: API_AND_CONFIG_MAP
+  accessEntries:
+    - principalARN: <GITHUB_ACTIONS_ROLE_ARN>
+      type: STANDARD
+      accessPolicies:
+        - policyARN: arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy
+          accessScope:
+            type: cluster
 
 managedNodeGroups:
   - name: fraud-nodes

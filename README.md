@@ -116,7 +116,7 @@ MySQL / RDS
 | **Prometheus** | Metrics collection |
 | **Grafana** | Monitoring dashboards |
 | **AWS ALB** | External application access |
-| **EC2 + SSM** | EC2 deployment path |
+
 
 ---
 
@@ -269,7 +269,6 @@ GitHub Actions
    ├── Configure kubectl
    ├── Deploy to EKS
    ├── Verify rollout
-   └── Deploy EC2 path
 ```
 
 ### ✅ Deployment validation
@@ -308,7 +307,6 @@ AWS VPC
 ├── NAT Gateway
 ├── Security Groups
 ├── Application Load Balancer
-├── EC2
 └── Amazon RDS MySQL
 ```
 
@@ -451,8 +449,6 @@ The following screenshots document the platform from local validation through AW
 ### EKS Managed Node Group
 ![AWS EKS Node Group](screenshots/02-aws-eks-nodegroups.png)
 
-### EC2 Instance
-![AWS EC2 Instance](screenshots/02-aws-ec2-instance.png)
 
 ### Amazon RDS MySQL
 ![AWS RDS Database](screenshots/03-aws-rds-database.png)
@@ -566,7 +562,6 @@ This project is especially relevant to **Cloud Engineer, DevOps Engineer, Platfo
 - AWS VPC
 - Subnets and routing
 - Security Groups
-- EC2
 - RDS
 - ALB
 - ECR

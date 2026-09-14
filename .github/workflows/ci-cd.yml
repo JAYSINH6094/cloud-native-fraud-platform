@@ -36,35 +36,39 @@ jobs:
         run: |
           aws sts get-caller-identity
 
+      - name: Set ECR registry
+        run: |
+          echo "ECR_REGISTRY=$(aws sts get-caller-identity --query Account --output text).dkr.ecr.ap-south-1.amazonaws.com" >> "$GITHUB_ENV"
+
       - name: Login to Amazon ECR
         run: |
           aws ecr get-login-password --region ap-south-1 | \
             docker login \
             --username AWS \
             --password-stdin \
-            649320110694.dkr.ecr.ap-south-1.amazonaws.com
+            "${{ env.ECR_REGISTRY }}"
 
       - name: Build API Docker image
         run: |
           docker build \
-            -t 649320110694.dkr.ecr.ap-south-1.amazonaws.com/fraud-api:${{ github.sha }} \
+            -t "${{ env.ECR_REGISTRY }}/fraud-api:${{ github.sha }}" \
             ./transaction-api
 
       - name: Build Fraud Engine Docker image
         run: |
           docker build \
-            -t 649320110694.dkr.ecr.ap-south-1.amazonaws.com/fraud-engine:${{ github.sha }} \
+            -t "${{ env.ECR_REGISTRY }}/fraud-engine:${{ github.sha }}" \
             ./fraud-engine
 
       - name: Push API image to ECR
         run: |
           docker push \
-            649320110694.dkr.ecr.ap-south-1.amazonaws.com/fraud-api:${{ github.sha }}
+            "${{ env.ECR_REGISTRY }}/fraud-api:${{ github.sha }}"
 
       - name: Push Fraud Engine image to ECR
         run: |
           docker push \
-            649320110694.dkr.ecr.ap-south-1.amazonaws.com/fraud-engine:${{ github.sha }}
+            "${{ env.ECR_REGISTRY }}/fraud-engine:${{ github.sha }}"
 
       - name: Configure kubectl
         run: |
@@ -74,20 +78,72 @@ jobs:
 
           kubectl get nodes
 
+      - name: Create namespace
+        run: |
+          kubectl apply -f k8s/namespace.yaml
+
+      - name: Create database configuration
+        run: |
+          DB_HOST=$(aws rds describe-db-instances \
+            --db-instance-identifier fraud-mysql \
+            --query 'DBInstances[0].Endpoint.Address' \
+            --output text)
+
+          kubectl -n fraud-platform create secret generic database-config \
+            --from-literal=DB_HOST="$DB_HOST" \
+            --from-literal=DB_USER="fraud_user" \
+            --from-literal=DB_PASSWORD="${{ secrets.DB_PASSWORD }}" \
+            --from-literal=DB_NAME="fraud_db" \
+            --dry-run=client \
+            -o yaml | kubectl apply -f -
+
+      - name: Apply Kubernetes manifests
+        run: |
+          kubectl apply -f k8s/kafka-deployment.yaml
+          kubectl apply -f k8s/kafka-service.yaml
+          kubectl apply -f k8s/api-deployment.yaml
+          kubectl apply -f k8s/api-service.yaml
+          kubectl apply -f k8s/fraud-engine-deployment.yaml
+
       - name: Deploy images to EKS
         run: |
           kubectl -n fraud-platform set image deployment/transaction-api \
-            transaction-api=649320110694.dkr.ecr.ap-south-1.amazonaws.com/fraud-api:${{ github.sha }}
+            transaction-api="${{ env.ECR_REGISTRY }}/fraud-api:${{ github.sha }}"
 
           kubectl -n fraud-platform set image deployment/fraud-engine \
-            fraud-engine=649320110694.dkr.ecr.ap-south-1.amazonaws.com/fraud-engine:${{ github.sha }}
+            fraud-engine="${{ env.ECR_REGISTRY }}/fraud-engine:${{ github.sha }}"
 
-          kubectl -n fraud-platform rollout status deployment/transaction-api
+      - name: Install Metrics Server
+        run: |
+          kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
 
-          kubectl -n fraud-platform rollout status deployment/fraud-engine
+      - name: Wait for Metrics Server
+        run: |
+          kubectl -n kube-system rollout status deployment/metrics-server \
+            --timeout=180s
+
+      - name: Apply HPA
+        run: |
+          kubectl apply -f k8s/hpa.yaml
+
+
+      - name: Wait for Kafka
+        run: |
+          kubectl -n fraud-platform rollout status deployment/kafka \
+            --timeout=180s
+
+      - name: Wait for transaction API
+        run: |
+          kubectl -n fraud-platform rollout status deployment/transaction-api \
+            --timeout=180s
+
+      - name: Wait for fraud engine
+        run: |
+          kubectl -n fraud-platform rollout status deployment/fraud-engine \
+            --timeout=180s
 
       - name: Verify EKS deployment
         run: |
           kubectl -n fraud-platform get deployments
           kubectl -n fraud-platform get pods
-
+          kubectl -n fraud-platform get services

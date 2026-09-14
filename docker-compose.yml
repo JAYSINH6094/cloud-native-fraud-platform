@@ -15,25 +15,20 @@ services:
     networks:
       - fraud-network
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prootpassword"]
+      test:
+        [
+          "CMD",
+          "mysqladmin",
+          "ping",
+          "-h",
+          "localhost",
+          "-u",
+          "root",
+          "-prootpassword"
+        ]
       interval: 10s
       timeout: 5s
       retries: 5
-
-  api:
-    build:
-      context: ./transaction-api
-      dockerfile: Dockerfile
-    container_name: fraud-api
-    env_file:
-      - ./transaction-api/.env
-    ports:
-      - "8000:8000"
-    depends_on:
-      mysql:
-        condition: service_healthy
-    networks:
-      - fraud-network
 
   kafka:
     image: apache/kafka:4.3.1
@@ -55,14 +50,46 @@ services:
     networks:
       - fraud-network
 
+  api:
+    build:
+      context: ./transaction-api
+      dockerfile: Dockerfile
+    container_name: fraud-api
+    environment:
+      DB_HOST: mysql
+      DB_PORT: "3306"
+      DB_USER: fraud_user
+      DB_PASSWORD: fraud_password
+      DB_NAME: fraud_db
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      KAFKA_TOPIC: transactions
+    ports:
+      - "8000:8000"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - fraud-network
+
   fraud-engine:
     build:
       context: ./fraud-engine
       dockerfile: Dockerfile
     container_name: fraud-engine
+    environment:
+      DB_HOST: mysql
+      DB_PORT: "3306"
+      DB_USER: fraud_user
+      DB_PASSWORD: fraud_password
+      DB_NAME: fraud_db
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      KAFKA_TOPIC: transactions
+      KAFKA_GROUP_ID: fraud-engine
     depends_on:
-      - kafka
-      - mysql
+      mysql:
+        condition: service_healthy
+      kafka:
+        condition: service_started
     networks:
       - fraud-network
 
