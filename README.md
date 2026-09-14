@@ -1,10 +1,33 @@
+<div align="center">
+
 # ⚡ Cloud-Native Real-Time Transaction Processing & Fraud Detection Platform
 
-> **A production-style AWS + Kubernetes project that processes transactions asynchronously, detects fraud in real time, auto-scales under load, self-heals failed pods, and ships through an automated CI/CD pipeline.**
+### Real-time transactions • Event-driven fraud detection • Kubernetes • AWS
 
-<p align="center">
-  <strong>FastAPI</strong> • <strong>Kafka</strong> • <strong>MySQL</strong> • <strong>Docker</strong> • <strong>Kubernetes</strong> • <strong>AWS EKS</strong> • <strong>Terraform</strong> • <strong>GitHub Actions</strong> • <strong>Prometheus</strong> • <strong>Grafana</strong>
+<p>
+  <img src="https://img.shields.io/badge/Python-3.x-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python">
+  <img src="https://img.shields.io/badge/FastAPI-API-009688?style=for-the-badge&logo=fastapi&logoColor=white" alt="FastAPI">
+  <img src="https://img.shields.io/badge/Apache%20Kafka-Event%20Streaming-231F20?style=for-the-badge&logo=apachekafka&logoColor=white" alt="Apache Kafka">
+  <img src="https://img.shields.io/badge/MySQL-Database-4479A1?style=for-the-badge&logo=mysql&logoColor=white" alt="MySQL">
 </p>
+<p>
+  <img src="https://img.shields.io/badge/Docker-Containerization-2496ED?style=for-the-badge&logo=docker&logoColor=white" alt="Docker">
+  <img src="https://img.shields.io/badge/Kubernetes-Orchestration-326CE5?style=for-the-badge&logo=kubernetes&logoColor=white" alt="Kubernetes">
+  <img src="https://img.shields.io/badge/AWS-EKS%20%7C%20ECR-232F3E?style=for-the-badge&logo=amazonaws&logoColor=white" alt="AWS">
+  <img src="https://img.shields.io/badge/Terraform-IaC-7B42BC?style=for-the-badge&logo=terraform&logoColor=white" alt="Terraform">
+  <img src="https://img.shields.io/badge/GitHub%20Actions-CI%2FCD-2088FF?style=for-the-badge&logo=githubactions&logoColor=white" alt="GitHub Actions">
+</p>
+
+> **A production-style cloud engineering portfolio project that processes transactions asynchronously, evaluates fraud in real time, scales with Kubernetes, and automates delivery through CI/CD.**
+
+<p>
+  <a href="#-architecture">🏗️ Architecture</a> •
+  <a href="#-screenshots--deployment-evidence">📸 Evidence</a> •
+  <a href="#-fraud-detection-demo">🛡️ Fraud Demo</a> •
+  <a href="#-run-locally">🛠️ Run Locally</a>
+</p>
+
+</div>
 
 ---
 
@@ -27,14 +50,33 @@ It combines:
 
 ### 🎯 Portfolio outcome
 
-A transaction enters the platform, is persisted and processed asynchronously, evaluated by the Fraud Engine, and receives a final decision such as:
+A transaction enters the platform, is persisted and processed asynchronously, evaluated by the Fraud Engine, and receives a final decision:
 
 ```text
 Normal transaction       → APPROVED
 High-value fraud test    → FRAUD
 ```
 
-The complete flow was tested on the deployed AWS/EKS environment.
+The complete transaction flow was previously deployed and validated on AWS/EKS. The AWS resources were subsequently removed to avoid unnecessary cloud costs. The Terraform and EKS configuration remain available for future deployment.
+
+<details>
+<summary><strong>📌 Project at a glance</strong></summary>
+
+| Area | Implementation |
+|---|---|
+| API | FastAPI + Python |
+| Event streaming | Apache Kafka |
+| Fraud processing | Dedicated rule-based Fraud Engine |
+| Database | MySQL / Amazon RDS |
+| Containers | Docker |
+| Orchestration | Kubernetes / Amazon EKS |
+| Registry | Amazon ECR |
+| Infrastructure | Terraform |
+| CI/CD | GitHub Actions + AWS OIDC |
+| Scaling | Kubernetes HPA |
+| Observability | Prometheus + Grafana |
+
+</details>
 
 ---
 
@@ -44,10 +86,10 @@ The complete flow was tested on the deployed AWS/EKS environment.
 flowchart LR
     U[Client / Tester]
 
-    U --> ALB[AWS Application Load Balancer]
+    U --> LB[Kubernetes LoadBalancer Service]
 
     subgraph AWS[AWS Cloud]
-        ALB --> EKS[Amazon EKS]
+        LB --> EKS[Amazon EKS]
 
         subgraph K8S[Kubernetes Cluster]
             API[Transaction API<br/>FastAPI]
@@ -60,15 +102,13 @@ flowchart LR
             HPA -. scales .-> API
         end
 
-        FRAUD --> RDS[(Amazon RDS<br/>MySQL)]
-        API --> RDS
+        API --> RDS[(Amazon RDS<br/>MySQL)]
+        FRAUD --> RDS
 
         PROM[Prometheus]
         GRAF[Grafana]
         PROM --> GRAF
     end
-
-    EKS --> K8S
 ```
 
 ### 🔄 End-to-end transaction flow
@@ -77,7 +117,7 @@ flowchart LR
 Client
   │
   ▼
-AWS Load Balancer
+Kubernetes LoadBalancer Service
   │
   ▼
 Transaction API
@@ -115,8 +155,103 @@ MySQL / RDS
 | **Kubernetes HPA** | Automatic API scaling |
 | **Prometheus** | Metrics collection |
 | **Grafana** | Monitoring dashboards |
-| **AWS ALB** | External application access |
+| **Kubernetes LoadBalancer Service** | External application access |
 
+---
+
+# 📸 Screenshots & Deployment Evidence
+
+> The evidence below is grouped for fast portfolio review: **PowerShell/Kubernetes validation first**, followed by **historical AWS deployment evidence**. The AWS environment was later cleaned up to avoid unnecessary costs.
+
+## 1️⃣ PowerShell / Kubernetes Validation
+
+<table>
+<tr>
+<td width="50%">
+<strong>☸️ EKS Nodes Ready</strong><br><br>
+<img src="screenshots/01-eks-nodes-ready.png" alt="EKS Nodes Ready" width="100%">
+</td>
+<td width="50%">
+<strong>🟢 Kubernetes Pods Healthy</strong><br><br>
+<img src="screenshots/02-kubernetes-pods-healthy.png" alt="Kubernetes Pods Healthy" width="100%">
+</td>
+</tr>
+<tr>
+<td>
+<strong>📈 HPA Autoscaling</strong><br><br>
+<img src="screenshots/03-hpa-autoscaling.png" alt="HPA Autoscaling" width="100%">
+</td>
+<td>
+<strong>📊 Grafana Monitoring</strong><br><br>
+<img src="screenshots/04-grafana-monitoring.png" alt="Grafana Monitoring" width="100%">
+</td>
+</tr>
+<tr>
+<td>
+<strong>🛡️ Fraud Engine Result</strong><br><br>
+<img src="screenshots/05-fraud-engine-result.png" alt="Fraud Engine Result" width="100%">
+</td>
+<td>
+<strong>🗄️ MySQL Fraud & Approved Results</strong><br><br>
+<img src="screenshots/06-mysql-fraud-approved-results.png" alt="MySQL Fraud and Approved Results" width="100%">
+</td>
+</tr>
+<tr>
+<td>
+<strong>🔄 GitHub Actions CI/CD</strong><br><br>
+<img src="screenshots/07-github-actions-cicd.png" alt="GitHub Actions CI/CD" width="100%">
+</td>
+<td>
+<strong>❤️ Load Balancer Health</strong><br><br>
+<img src="screenshots/08-aws-load-balancer-health.png" alt="Load Balancer Health" width="100%">
+</td>
+</tr>
+<tr>
+<td>
+<strong>📁 Project Structure</strong><br><br>
+<img src="screenshots/09-project-structure.png" alt="Project Structure" width="100%">
+</td>
+<td>
+<strong>🐙 GitHub Repository</strong><br><br>
+<img src="screenshots/10-github-repository.png" alt="GitHub Repository" width="100%">
+</td>
+</tr>
+</table>
+
+## 2️⃣ ☁️ Historical AWS Deployment Evidence
+
+<table>
+<tr>
+<td width="50%">
+<strong>☁️ Amazon EKS Cluster</strong><br><br>
+<img src="screenshots/01-aws-eks-cluster.png" alt="AWS EKS Cluster" width="100%">
+</td>
+<td width="50%">
+<strong>☸️ EKS Node Groups</strong><br><br>
+<img src="screenshots/02-aws-eks-nodegroups.png" alt="AWS EKS Node Groups" width="100%">
+</td>
+</tr>
+<tr>
+<td>
+<strong>🗄️ Amazon RDS MySQL</strong><br><br>
+<img src="screenshots/03-aws-rds-database.png" alt="AWS RDS MySQL" width="100%">
+</td>
+<td>
+<strong>⚖️ AWS Load Balancer</strong><br><br>
+<img src="screenshots/04-aws-load-balancer.png" alt="AWS Load Balancer" width="100%">
+</td>
+</tr>
+<tr>
+<td>
+<strong>📦 Amazon ECR Images</strong><br><br>
+<img src="screenshots/05-aws-ecr-images.png" alt="Amazon ECR Images" width="100%">
+</td>
+<td>
+<strong>🖥️ Historical EC2 Evidence</strong><br><br>
+<img src="screenshots/02-aws-ec2-instance.png" alt="Historical AWS EC2 Instance" width="100%">
+</td>
+</tr>
+</table>
 
 ---
 
@@ -154,13 +289,25 @@ Result:    FRAUD
 
 The fraud decision was also verified in the MySQL database after processing.
 
+### Fraud rules
+
+The current rule-based engine marks a transaction as `FRAUD` when:
+
+- Amount is greater than `100000`
+- Location is `Unknown` or `Blacklisted`
+- Device ID is `UNKNOWN` or `BLACKLISTED`
+
+Otherwise, the transaction is marked `APPROVED`.
+
 ---
 
 # ☸️ Kubernetes in Action
 
 The application runs in the `fraud-platform` namespace.
 
-### Current validated cluster state
+### Previously validated AWS/EKS cluster state
+
+> The following represents the previously deployed AWS/EKS environment used for validation. The AWS resources are not currently running.
 
 ```text
 EKS worker nodes        3/3 Ready
@@ -184,23 +331,23 @@ CPU target:       70%
 A load test was performed against the Transaction API.
 
 ```text
-             Load increases
-                    │
-                    ▼
-              CPU increases
-                    │
-                    ▼
-             HPA scales up
-                    │
-                 2 → 5
-                    │
-                    ▼
-              Load decreases
-                    │
-                    ▼
-             HPA scales down
-                    │
-                 5 → 2
+              Load increases
+                     │
+                     ▼
+               CPU increases
+                     │
+                     ▼
+              HPA scales up
+                     │
+                  2 → 5
+                     │
+                     ▼
+               Load decreases
+                     │
+                     ▼
+              HPA scales down
+                     │
+                  5 → 2
 ```
 
 ### ♻️ Self-healing demonstration
@@ -223,7 +370,7 @@ Application returns to desired state
 
 # 📊 Observability
 
-The platform uses a Prometheus + Grafana monitoring stack.
+Prometheus and Grafana were used during the previous AWS/EKS deployment to inspect Kubernetes workload and CPU metrics.
 
 ```text
 Kubernetes workloads
@@ -235,7 +382,7 @@ Kubernetes workloads
      Grafana
 ```
 
-Monitoring components:
+Monitoring components validated during the previous deployment included:
 
 - Prometheus
 - Grafana
@@ -245,13 +392,11 @@ Monitoring components:
 - Metrics Server
 - kube-prometheus operator
 
-Grafana was validated against the `fraud-platform` namespace and used to inspect Kubernetes workload metrics and CPU utilization.
-
 ---
 
 # 🔄 CI/CD Pipeline
 
-Every push to `main` can trigger the GitHub Actions deployment workflow.
+The repository contains a GitHub Actions workflow designed to build, publish, and deploy the application to AWS/EKS.
 
 ```text
 Git Push
@@ -262,18 +407,27 @@ GitHub Actions
    ├── Checkout source
    ├── Configure AWS OIDC
    ├── Install dependencies
+   ├── Run validation
+   ├── Verify AWS infrastructure prerequisites
    ├── Verify AWS access
+   ├── Login to ECR
    ├── Build API image
    ├── Build Fraud Engine image
    ├── Push images to ECR
    ├── Configure kubectl
-   ├── Deploy to EKS
+   ├── Deploy Kubernetes manifests
+   ├── Configure HPA
    ├── Verify rollout
+   └── Verify deployments, pods and services
 ```
 
-### ✅ Deployment validation
+### 🔐 GitHub Actions authentication
 
-The final CI/CD workflow completed successfully.
+The workflow uses **AWS OIDC** rather than storing long-lived AWS access keys in GitHub Actions secrets.
+
+### ✅ Historical deployment validation
+
+The GitHub Actions workflow was successfully used during the previous live AWS/EKS deployment.
 
 The pipeline demonstrated:
 
@@ -291,6 +445,8 @@ Kubernetes rollout
 Deployment verification
 ```
 
+The AWS environment is currently cleaned up to avoid unnecessary cloud costs. The workflow remains available for a future deployment.
+
 ---
 
 # 🏗️ AWS Infrastructure
@@ -306,11 +462,14 @@ AWS VPC
 ├── Internet Gateway
 ├── NAT Gateway
 ├── Security Groups
-├── Application Load Balancer
-└── Amazon RDS MySQL
+├── Amazon RDS MySQL
+├── Amazon ECR: fraud-api
+└── Amazon ECR: fraud-engine
 ```
 
 The EKS cluster is configured separately using `eksctl`.
+
+External application access is provided through the Kubernetes `LoadBalancer` Service, which creates the required AWS load-balancing resource when the cluster is deployed.
 
 ### AWS region
 
@@ -320,11 +479,13 @@ ap-south-1
 
 ### Security design
 
-- ALB accepts HTTP traffic.
-- Application traffic is restricted to the application security group.
-- RDS is private.
-- MySQL access is restricted to approved application/EKS security groups.
-- GitHub Actions uses OIDC rather than storing long-lived AWS access keys in the workflow.
+- RDS is deployed privately.
+- MySQL access is restricted to the application/EKS security configuration.
+- Terraform database credentials are supplied through a sensitive variable.
+- Secrets are not committed to Git.
+- GitHub Actions uses OIDC for AWS authentication.
+- Public infrastructure templates use placeholders where appropriate.
+- Terraform state and local configuration files are excluded from version control.
 
 ---
 
@@ -353,23 +514,31 @@ cloud-native-fraud-platform/
 │   ├── requirements.txt
 │   └── Dockerfile
 │
+├── mysql/
+│   └── init.sql
+│
 ├── k8s/
 │   ├── namespace.yaml
 │   ├── api-deployment.yaml
 │   ├── api-service.yaml
 │   ├── fraud-engine-deployment.yaml
 │   ├── kafka-deployment.yaml
-│   └── kafka-service.yaml
+│   ├── kafka-service.yaml
+│   └── hpa.yaml
 │
 ├── terraform/
 │   ├── main.tf
 │   └── variables.tf
+│
+├── tests/
+│   └── test_fraud_rules.py
 │
 ├── .github/
 │   └── workflows/
 │       └── ci-cd.yml
 │
 ├── docker-compose.yml
+├── requirements-dev.txt
 ├── eks-cluster.yaml
 ├── eks-policy.json
 ├── github-actions-trust-policy.json
@@ -382,82 +551,30 @@ cloud-native-fraud-platform/
 
 # 🧪 Validation Results
 
-| Test | Result |
-|---|---|
-| Transaction API health | ✅ Passed |
-| AWS Load Balancer health | ✅ Passed |
-| MySQL/RDS persistence | ✅ Passed |
-| Kafka processing | ✅ Passed |
-| Fraud Engine | ✅ Passed |
-| `APPROVED` transaction | ✅ Verified |
-| `FRAUD` transaction | ✅ Verified |
-| EKS nodes | ✅ 3/3 Ready |
-| Kubernetes workloads | ✅ Running |
-| HPA scale-up | ✅ Demonstrated |
-| HPA scale-down | ✅ Demonstrated |
-| Pod self-healing | ✅ Demonstrated |
-| Prometheus | ✅ Running |
-| Grafana | ✅ Running |
-| GitHub Actions | ✅ Successful |
-| ECR image push | ✅ Successful |
-| EKS deployment | ✅ Successful |
+> **Portfolio evidence:** the results below record the previously validated AWS/EKS deployment. The cloud resources were later destroyed after testing.
 
 
----
-
-# 📸 Project Evidence
-
-The following screenshots document the platform from local validation through AWS deployment and cloud infrastructure verification.
-
-## 💻 Local & Kubernetes Validation
-
-### EKS Nodes Ready
-![EKS Nodes Ready](screenshots/01-eks-nodes-ready.png)
-
-### Kubernetes Pods Healthy
-![Kubernetes Pods Healthy](screenshots/02-kubernetes-pods-healthy.png)
-
-### HPA Autoscaling
-![HPA Autoscaling](screenshots/03-hpa-autoscaling.png)
-
-### Grafana Monitoring
-![Grafana Monitoring](screenshots/04-grafana-monitoring.png)
-
-### Fraud Engine Result
-![Fraud Engine Result](screenshots/05-fraud-engine-result.png)
-
-### MySQL Fraud & Approved Results
-![MySQL Results](screenshots/06-mysql-fraud-approved-results.png)
-
-### GitHub Actions CI/CD
-![GitHub Actions CI/CD](screenshots/07-github-actions-cicd.png)
-
-### AWS Load Balancer Health
-![AWS Load Balancer Health](screenshots/08-aws-load-balancer-health.png)
-
-### Project Structure
-![Project Structure](screenshots/09-project-structure.png)
-
-### GitHub Repository
-![GitHub Repository](screenshots/10-github-repository.png)
-
-## ☁️ AWS Console Evidence
-
-### Amazon EKS Cluster
-![AWS EKS Cluster](screenshots/01-aws-eks-cluster.png)
-
-### EKS Managed Node Group
-![AWS EKS Node Group](screenshots/02-aws-eks-nodegroups.png)
-
-
-### Amazon RDS MySQL
-![AWS RDS Database](screenshots/03-aws-rds-database.png)
-
-### Application Load Balancer
-![AWS Load Balancer](screenshots/04-aws-load-balancer.png)
-
-### Amazon ECR
-![AWS ECR Images](screenshots/05-aws-ecr-images.png)
+| Test | Result | Validation |
+|---|---|---|
+| Transaction API health | ✅ Passed | Local + historical AWS |
+| MySQL persistence | ✅ Passed | Local + historical RDS |
+| Kafka processing | ✅ Passed | Local + historical AWS |
+| Fraud Engine | ✅ Passed | Local + historical AWS |
+| `APPROVED` transaction | ✅ Verified | Local + historical AWS |
+| `FRAUD` transaction | ✅ Verified | Local + historical AWS |
+| Automated fraud-rule tests | ✅ 4/4 Passed | Local pytest |
+| Docker Compose stack | ✅ Passed | Local |
+| MySQL schema initialization | ✅ Passed | Local |
+| EKS nodes | ✅ 3/3 Ready | Historical AWS |
+| Kubernetes workloads | ✅ Running | Historical AWS |
+| HPA scale-up | ✅ Demonstrated | Historical AWS |
+| HPA scale-down | ✅ Demonstrated | Historical AWS |
+| Pod self-healing | ✅ Demonstrated | Historical AWS |
+| Prometheus | ✅ Running | Historical AWS |
+| Grafana | ✅ Running | Historical AWS |
+| GitHub Actions | ✅ Successful | Historical deployment |
+| ECR image push | ✅ Successful | Historical deployment |
+| EKS deployment | ✅ Successful | Historical deployment |
 
 ---
 
@@ -465,7 +582,7 @@ The following screenshots document the platform from local validation through AW
 
 ### 1. Clone
 
-```bash
+```powershell
 git clone https://github.com/JAYSINH6094/cloud-native-fraud-platform.git
 cd cloud-native-fraud-platform
 ```
@@ -477,10 +594,11 @@ python -m venv .venv
 .venv\Scripts\Activate.ps1
 ```
 
-### 3. Install API dependencies
+### 3. Install dependencies
 
 ```powershell
 pip install -r transaction-api/requirements.txt
+pip install -r requirements-dev.txt
 ```
 
 ### 4. Start the containerized stack
@@ -489,11 +607,52 @@ pip install -r transaction-api/requirements.txt
 docker compose up --build
 ```
 
+The local stack includes:
+
+```text
+MySQL
+Kafka
+Transaction API
+Fraud Engine
+```
+
+The MySQL schema is automatically initialized from:
+
+```text
+mysql/init.sql
+```
+
+### 5. Test API health
+
+```powershell
+Invoke-RestMethod http://localhost:8000/health
+```
+
+Expected:
+
+```json
+{
+  "status": "healthy"
+}
+```
+
+### 6. Run automated tests
+
+```powershell
+python -m pytest .\tests -v
+```
+
+### 7. Stop the local stack
+
+```powershell
+docker compose down -v
+```
+
 ---
 
 # ☁️ Kubernetes Access
 
-Configure AWS/EKS access:
+When the AWS infrastructure is deployed:
 
 ```powershell
 aws eks update-kubeconfig --region ap-south-1 --name fraud-platform-eks
@@ -511,6 +670,12 @@ Check application:
 kubectl get pods -n fraud-platform
 ```
 
+Check services:
+
+```powershell
+kubectl get svc -n fraud-platform
+```
+
 Check autoscaling:
 
 ```powershell
@@ -521,7 +686,7 @@ kubectl get hpa -n fraud-platform
 
 # 📈 Grafana Access
 
-Forward Grafana locally:
+During the previous monitoring deployment, Grafana was accessed through Kubernetes port forwarding:
 
 ```powershell
 kubectl port-forward -n monitoring svc/monitoring-grafana 3000:80
@@ -533,7 +698,7 @@ Open:
 http://localhost:3000
 ```
 
-Select the `fraud-platform` namespace in the Kubernetes dashboard.
+The `fraud-platform` namespace was used for inspecting Kubernetes workload and CPU metrics.
 
 ---
 
@@ -546,28 +711,37 @@ The repository is prepared for public portfolio sharing.
 - `.env` files are ignored.
 - Terraform state files are ignored.
 - Local executable tools are ignored.
-- Public example infrastructure files use placeholders where appropriate.
+- Public infrastructure examples use placeholders where appropriate.
 - GitHub Actions uses OIDC for AWS authentication.
+- RDS is configured as a private database.
+- AWS resources are not intentionally left running when the project is not being demonstrated.
 
-> **Before deploying your own copy, supply your own AWS account, networking IDs, secrets, and runtime configuration.**
+> **Before deploying your own copy, supply your own AWS account, networking IDs, secrets, IAM configuration, and runtime configuration.**
 
 ---
 
 # 🎓 What This Project Demonstrates
 
-This project is especially relevant to **Cloud Engineer, DevOps Engineer, Platform Engineer, and Cloud/DevOps-focused Backend Engineer** roles.
+This project is especially relevant to:
+
+- **Cloud Engineer**
+- **DevOps Engineer**
+- **Platform Engineer**
+- **Cloud/DevOps-focused Backend Engineer**
 
 ### Cloud & Infrastructure
 
 - AWS VPC
 - Subnets and routing
+- Internet Gateway
+- NAT Gateway
 - Security Groups
 - RDS
-- ALB
 - ECR
 - EKS
 - IAM/OIDC
 - Terraform
+- Kubernetes LoadBalancer Service
 
 ### DevOps
 
@@ -588,7 +762,9 @@ This project is especially relevant to **Cloud Engineer, DevOps Engineer, Platfo
 - MySQL
 - Kafka
 - Event-driven processing
+- Asynchronous processing
 - Fraud detection
+- Containerized microservices
 
 ---
 
@@ -604,6 +780,8 @@ This project is especially relevant to **Cloud Engineer, DevOps Engineer, Platfo
 - Multi-AZ database configuration
 - Disaster-recovery automation
 - More comprehensive automated tests
+- Production-grade observability and alerting
+- Outbox pattern for stronger database-to-Kafka consistency
 
 ---
 
@@ -617,7 +795,7 @@ This project is especially relevant to **Cloud Engineer, DevOps Engineer, Platfo
 │  ⚡ FastAPI          📨 Kafka        🛡️ Fraud Engine │
 │  🐳 Docker           ☸️ EKS          🏗️ Terraform    │
 │  🔄 CI/CD            📈 HPA          📊 Grafana      │
-│  🗄️ RDS MySQL        🔍 Prometheus   ⚖️ ALB          │
+│  🗄️ RDS MySQL        🔍 Prometheus   ⚖️ LoadBalancer │
 │                                                      │
 │       Real-time processing + cloud automation       │
 │                                                      │
@@ -626,7 +804,17 @@ This project is especially relevant to **Cloud Engineer, DevOps Engineer, Platfo
 
 ---
 
-## 👨‍💻 Author
+### 🧭 Why it stands out
+
+This project demonstrates a complete cloud-engineering workflow rather than a single application feature:
+
+**Build → Containerize → Stream → Detect → Persist → Deploy → Scale → Observe → Recover → Automate**
+
+It is intentionally centered on cloud engineering, while the fraud rules provide a realistic workload for the distributed platform.
+
+---
+
+# 👨‍💻 Author
 
 **JAYSINH THAKOR**
 
@@ -634,4 +822,4 @@ GitHub: **[@JAYSINH6094](https://github.com/JAYSINH6094)**
 
 ---
 
-> **Built as a hands-on cloud engineering portfolio project focused on AWS, Kubernetes, automation, observability, and distributed transaction processing.**
+> **Built as a hands-on cloud engineering portfolio project focused on AWS, Kubernetes, automation, observability, CI/CD, and distributed transaction processing.**
