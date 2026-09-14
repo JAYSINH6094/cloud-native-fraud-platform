@@ -23,6 +23,40 @@ jobs:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           aws-region: ap-south-1
 
+      - name: Verify infrastructure prerequisites
+        run: |
+          set -e
+
+          echo "Checking required AWS infrastructure..."
+
+          if ! aws ecr describe-repositories \
+            --repository-names fraud-api fraud-engine \
+            --region ap-south-1 \
+            >/dev/null; then
+            echo "ERROR: Required ECR repositories are missing."
+            echo "Run Terraform infrastructure provisioning before running this pipeline."
+            exit 1
+          fi
+
+          if ! aws eks describe-cluster \
+            --name fraud-platform-eks \
+            --region ap-south-1 \
+            >/dev/null; then
+            echo "ERROR: EKS cluster fraud-platform-eks is missing."
+            echo "Run the infrastructure provisioning steps before running this pipeline."
+            exit 1
+          fi
+
+          if ! aws rds describe-db-instances \
+            --db-instance-identifier fraud-mysql \
+            --region ap-south-1 \
+            >/dev/null; then
+            echo "ERROR: RDS instance fraud-mysql is missing."
+            echo "Run Terraform infrastructure provisioning before running this pipeline."
+            exit 1
+          fi
+
+          echo "PASS: Required AWS infrastructure exists."
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
