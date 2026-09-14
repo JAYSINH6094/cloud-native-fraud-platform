@@ -21,3 +21,6 @@ tools/
 eksctl_Windows_amd64.zip
 
 eksctl/
+
+# Terraform variable values
+terraform.tfvars
